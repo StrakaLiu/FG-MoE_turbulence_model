@@ -1,0 +1,221 @@
+
+# Introduction
+
+**FG-MoE (Factorized-Gating Mixture of Experts)** is a modeling framework designed to capture complex turbulent behaviors across different flow regimes. It decomposes turbulence model into regime-specific experts and combines them through spatially varying gating probabilities. FG-MoE introduces a **factorized gating mechanism** to reduce model complexity, improve interpretability, and enable cross-regime generalization.
+
+This guide provides step-by-step instructions for installation, compilation, and usage.
+
+# Requirements
+| Category        | Requirement                                                                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **OS**          | Ubuntu 22.04 (or other compatible Linux distributions)                                                                                                                                          |
+| **OpenFOAM**    | v2212 compiled and sourced (recommended: GCC 11.4.0, OpenMPI 4.1.2, CMake 3.22.1)                                                                                                               |
+| **Python**      | ≥3.8 (3.10 recommended) with pip, numpy (1.24.3 recommended), scipy (1.11.1 recommended), TensorFlow >2.1 (2.13.0 recommended, required for FG-MoE turbulence model), panda (2.3.3 recommended) |
+| **System Libs** | build-essential, cmake, flex, bison, zlib1g-dev, libreadline-dev, etc. (typically present if OpenFOAM is already built)                                                                         |
+| **Optional**    | ParaView (recommended for visualization)                                                                                                                                                        |
+
+# Installation
+
+The following steps install the **DAFI** framework, the **PythonFOAM solvers** , and the **FG-MoE turbulence models**.
+
+- Create working directory
+```bash
+export INSTALL_LOCATION=$HOME/software         # change if needed
+mkdir -p $INSTALL_LOCATION && cd $INSTALL_LOCATION
+```
+
+### 1. DAFI
+
+Download the DAFI code used for model learning
+```bash
+git clone https://github.com/XinleiZhang/ENKL.git
+source $INSTALL_LOCATION/ENKL/init.sh
+```
+
+### 2. PythonFOAM
+
+- Download the PythonFOAM code, which provides a coupled OpenFOAM-Python solver. 
+```bash
+git clone  https://github.com/argonne-lcf/PythonFOAM.git
+```
+
+- Edit the `prep_env.sh` file in `$INSTALL_LOCATION/PythonFOAM` and replace all placeholder paths in the file with your actual installation paths.
+```bash
+echo "Make sure your paths to OpenFOAM/Python headers/libraries are set appropriately"
+if [ "$1" == "-debug" ]; then
+	echo ""
+	echo "Using OpenFOAM in Debug mode"
+	source $YOUR_OPENFOAM_PATH/etc/bashrc
+else
+	echo "Using OpenFOAM in Optimized mode"
+	source $YOUR_OPENFOAM_PATH/etc/bashrc
+fi
+
+export PYTHON_LIB_PATH=$YOUR_PYTHON_LIB_PATH
+export PYTHON_BIN_PATH=$YOUR_PYTHON_BIN_PATH
+export PYTHON_INCLUDE_PATH=$YOUR_PYTHON_INCLUDE_PATH
+export NUMPY_INCLUDE_PATH=$YOUR_NUMPY_INCLUDE_PATH
+export PYTHON_LIB_NAME=lpython3.10
+```
+
+- Source the PythonFOAM
+```bash
+cd $INSTALL_LOCATION/PythonFOAM
+./prep_env.sh
+```
+
+### 3. FG-MoE turbulence models
+
+- Download the FG-MoE code
+```bash
+git clone  https://github.com/StrakaLiu/FG-MoE_turbulence_model.git
+```
+
+- Compile the CFD solvers which can couple with neural network-based turbulence model
+```bash
+cd $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/flowSolvers/PysimpleFoam
+wclean && wmake
+
+cd $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/flowSolvers/PyrhoSimpleFoam
+wclean && wmake
+```
+
+- Compile the neural network-based turbulence models
+```bash
+cd $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/turbModel/FG_MoE/incompressible/
+wclean && wmake
+
+cd $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/turbModel/FG_MoE/compressible/
+wclean && wmake
+```
+# Datasets
+
+The datasets generated and used by the present study are provided at `$INSTALL_LOCATION/refData/` dictionary. 
+The data include:
+
+| Dictionary | Description |
+| :--- | :--- |
+|truthData| The data from experiments, DNS or high resolution LES of different cases. Used as truth values for evaluating the model performance.
+|trainedExpertModelData| The data of the three training cases, each run by cooresponding trained expert model.
+|FG_MoEData| The simulation results of the test cases by the trained FG-MoE turbulence model.
+|baselineData_EARSM05| The simulation results of the test cases by the baseline EARSM05 model.
+|baselineData_SST| The simulation results of the test cases by the $k$-$\omega$ SST model.
+
+
+# Get started
+
+### 1. Usage of the FG-MoE model 
+
+The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence model in OpenFoam. The required implements include:
+
+1. Add the following lib at the head of the `$CASE/system/controlDict` file:
+
+```C++
+libs
+( 
+  "lib_FG_MoE_incompressibleRAS"
+) ;
+```
+
+2. In the `$CASE/constant/turbulenceProperties` file, set the `RAS` dictionary as:
+
+```C++
+RAS
+{
+    RASModel            FG_MoE; 	
+    useBaselineModel    false;	//'true' if use the baseline EARSM05 model
+    homogeneousZ        true; 	//'true' if the case is 2D and being homogeneous in Z direction
+    homogeneousY        false; 	//'true' if the case is 2D and being homogeneous in Y direction
+    kInf                0.1;	//freestream value of k. Set as zero for internal cases
+    omegaInf            100;	//freestream value of omega. Set as zero for internal cases
+}
+```
+
+3. Copy the required modules by:
+
+```bash
+cp $INSTALL_LOCATION/requiredModules/* $CASE/
+```
+
+
+4. Run the case with the `PysimpleFoam` or the `PyrhoSimpleFoam` solvers.
+
+An example of the case set-up can be found at `$INSTALL_LOCATION/requiredModules/sampleCaseSet_channelFlow/` dictionary. 
+This is a channel flow at $Re_\tau=5200$. 
+It can be run and post-processed by:
+
+```bash
+PysimpleFoam
+postProcess -func sample_in
+python3 plotU.py
+```
+
+The simulation will be finished in about 200 seconds.
+
+### 2. Train experts for each flow scenario with DAFI code
+
+The initial sets for training the three expert models are located in `$INSTALL_LOCATION/trainingExperts/` dictionary. To run the training process, use the `training.sh` script in each training case.
+
+The `inputs/` dictionary includes two sub-dictionaries. 
+The `data/` includes the truth data for training (from experiment or DNS).
+The `baseline/` containes the baseline model predicting results, as the initial iteration for the training process. 
+
+During training, there will be a `results_ensemble/` dictionary, containing samples of the ensembled training as `sample_*/`. 
+In each sample dictionary, the predicting results at each iteration are listed as time dictionaries. 
+The related neural-network weight parameters are also listed as `nn_weights_flatten_*.dat`. 
+
+The mean absolute error of each sample predictions during the iteration can be plotted as by the `plot_misfit.py` file. Any converging criteria can be used to end the training process. The neural-network weight parameters (defined by the related `nn_weights_flatten_*.dat` file) of the sample with the lowest predicting error can be chosen as a trained expert. 
+
+The four expert models (3 trained and 1 baseline) in the present study are provided in `$INSTALL_LOCATION/requiredModules/` dictionary.
+
+
+
+### 3. Test FG-MOE model in various cases
+
+There are several test cases for testing the trained FG-MOE turbulence model. 
+They are located in the `$INSTALL_LOCATION/runTestCases/initialCases/` dictionary. 
+
+To run the cases, use the `$INSTALL_LOCATION/runTestCases/*.sh` scripts. 
+The expected simulation results of the test cases by the FG-MoE model can be found in `$INSTALL_LOCATION/refData/FG_MoEData/` dictionary.
+
+The test cases are as follow:
+
+| Case name | Description | Source |
+| :--- | :--- | :--- |
+| 01_channel | channel flow at Re_tau=5200 | [Link](https://turbulence.oden.utexas.edu/channel2015/content/Data_2015_5200.html) |
+| 02_ZPGPlate | zero-pressure gradient plate | [Link](https://tmbwg.github.io/turbmodels/flatplate.html) |
+| 03_planeJet | 2D plane jet | [Link](https://tmbwg.github.io/turbmodels/shear.html) |
+| 1_nasaHump | NASA wall-mounted hump | [Link](https://tmbwg.github.io/turbmodels/nasahump_val.html) |
+| 2_sqrDuct_Re=40000 | square duct flow at Re=40000 | [Link](http://newton.dma.uniroma1.it/square_duct/) |
+| 2.1_recDuct | rectangular duct at Re_tau=360, aspect ratio=3 | [Link](https://www.vinuesalab.com/duct/) |
+| 3_ASJ | Axisymmetric Subsonic Jet | [Link](https://tmbwg.github.io/turbmodels/jetsubsonic_val.html) |
+| 3.1_ANSJ | Axisymmetric near sonic Jet | [Link](https://tmbwg.github.io/turbmodels/jetnearsonic_val.html) |
+| 4* | NACA0012 at different AOA | [Link](https://tmbwg.github.io/turbmodels/naca0012_val.html) |
+| 5_bump | 2D bump | [Link](https://tmbwg.github.io/turbmodels/Other_LES_Data/family_of_bumps.html) |
+| 6_pehill | periodic hill | [Link](https://turbmodels.larc.nasa.gov/Other_DNS_Data/parameterized_periodic_hills.html) |
+| 7_FAITHhill | FAITH 3D hill | [Link](https://tmbwg.github.io/turbmodels/Other_exp_Data/FAITH_hill_exp.html) |
+| 8_CRMHL | High lift common research model | [Link](https://aiaa-hlpw.org/HLPW5/) |
+
+# Reproductivity
+
+The results demonstrated in the paper can be reproduced via the python scripts located in `$INSTALL_LOCATION/postProcess/` dictionary. 
+
+The descriptions of the files are as follow:
+
+| File name | Description |
+| :--- | :--- |
+| caseDir.txt | Defining the dictionary of the test cases for post-processing. |
+| plotExpertResults.py | Plots the detailed results of the trained expert models in corresponding training cases (Fig. 2). |
+| calculateCasesErr.py | Calculating the relative error of each test case and write as a file `modelErr.txt in the test cases dictionary. |
+| plotCasesErr.py | Plotting the relative errors and compared with the baseline and the  $k$-$\omega$  SST models (Fig. 3a). |
+| plotCasesResults.py | Plotting the detailed results in representative cases (Fig. 3b-f). |
+| plotCasesStates.py | Calculating and plots the global probabilities of the states and experts of each test cases (Fig. 4). |
+| plot_CRMHL_Cp.py | Plotting the pressure coefficient results of the HL-CRM case (Fig. 5). |
+| plotExpertData.py | Plotting the PDFs of the discriminant input features  $\phi_m$  and the resulting discriminant functions  $F_m$  (Fig. 6, left column). |
+| plotExpertGates.py | Plotting the contour plots of  $F_m$  in the training cases (Fig. 6, middle and right columns). |
+
+# Contact
+
+Hao-Chen Liu, liu.h.c@imech.ac.cn
+
+Xin-Lei Zhang, zhangxinlei@imech.ac.cn
