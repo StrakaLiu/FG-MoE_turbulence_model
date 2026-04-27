@@ -3,7 +3,7 @@ dafi:
     model_file: nnfoam.py
     inverse_method: EnKF
     nsamples: 32
-    max_iterations: 10
+    max_iterations: 100
     rand_seed: 1
     verbosity: 2
     convergence_option: max # discrepancy
