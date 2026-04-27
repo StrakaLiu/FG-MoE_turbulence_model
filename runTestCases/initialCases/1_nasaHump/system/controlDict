@@ -1,0 +1,185 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+( 
+  "lib_FG_MoE_incompressibleRAS.so"
+) ;
+
+
+application       pimpleFoam;
+
+//startFrom           latestTime;
+startFrom           startTime;
+
+startTime           0;
+
+stopAt              endTime;
+
+endTime             5000;
+
+deltaT              1;
+
+writeControl        adjustableRunTime;
+
+writeInterval       1000;
+
+purgeWrite          1;
+
+writeFormat         ascii;
+//writeFormat         binary;
+
+writePrecision      6;
+
+writeCompression    off;
+
+timeFormat          general;
+
+timePrecision       8;
+
+adjustTimeStep      no;
+
+runTimeModifiable     true;
+
+maxCo           0.5;
+
+
+
+functions
+{
+
+  turbulenceFields1
+  {
+    // Mandatory entries (unmodifiable)
+    type            turbulenceFields;
+    libs            (fieldFunctionObjects);
+    fields           (R);
+    enabled         false;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    writeTime;
+  }
+
+  yPlus
+  {
+    // Mandatory entries (unmodifiable)
+    type            yPlus;
+    libs            (fieldFunctionObjects);
+    enabled         true;
+    executeControl  timeStep;
+    executeInterval 10;
+    writeControl    writeTime;
+  }
+
+  wallShearStress1
+    {
+        type            wallShearStress;
+        libs            (fieldFunctionObjects);
+        patches         (down);
+        writePrecision  8;
+        enabled         true;
+        executeControl  writeTime;
+        //executeInterval 1;
+        writeControl    writeTime;
+    }
+
+
+   Average
+   {
+    type            fieldAverage;
+    libs      ( "libfieldFunctionObjects.so" );
+    enabled         false;
+    timeStart 0.12;
+    writeControl    writeTime ;
+       fields
+       (
+          U
+          {
+              mean          on;
+              prime2Mean  on;
+              base          time;
+          }
+      p
+          {
+              mean          on;
+              prime2Mean  on;
+              base          time;
+          }
+      fd
+          {
+              mean          on;
+              prime2Mean  off;
+              base          time;
+          }
+      CDES
+      {
+              mean          on;
+              prime2Mean  off;
+              base          time;
+          }
+      k
+      {
+        mean          on;
+              prime2Mean  off;
+              base          time;     
+      }
+      omega
+      {
+        mean          on;
+              prime2Mean  off;
+              base          time;     
+      }
+      turbulenceProperties:R
+      {
+        mean          on;
+              prime2Mean  off;
+              base          time;     
+      }
+      nonlinearR
+      {
+        mean          on;
+                    prime2Mean  off;
+                    base          time;     
+      }
+      nut
+      {
+        mean          on;
+                    prime2Mean  off;
+                    base          time;     
+      }
+      C_mu_eff
+      {
+        mean          on;
+        prime2Mean  off;
+        base          time;     
+      }
+       );
+   }
+
+/*
+  write
+  {
+    type            writeObjects;
+    libs    ("libutilityFunctionObjects.so");
+
+    objects         (rho thermo:mu);
+
+    writeControl    writeTime;
+  }
+*/
+}
+
+// ************************************************************************* //

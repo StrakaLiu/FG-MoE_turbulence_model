@@ -1,0 +1,127 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      createPatchDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// This application/dictionary controls:
+// - optional: create new patches from boundary faces (either given as
+//   a set of patches or as a faceSet)
+// - always: order faces on coupled patches such that they are opposite. This
+//   is done for all coupled faces, not just for any patches created.
+// - optional: synchronise points on coupled patches.
+
+// 1. Create cyclic:
+// - specify where the faces should come from
+// - specify the type of cyclic. If a rotational specify the rotationAxis
+//   and centre to make matching easier
+// - always create both halves in one invocation with correct 'neighbourPatch'
+//   setting.
+// - optionally pointSync true to guarantee points to line up.
+
+// 2. Correct incorrect cyclic:
+// This will usually fail upon loading:
+//  "face 0 area does not match neighbour 2 by 0.0100005%"
+//  " -- possible face ordering problem."
+// - in polyMesh/boundary file:
+//      - loosen matchTolerance of all cyclics to get case to load
+//      - or change patch type from 'cyclic' to 'patch'
+//        and regenerate cyclic as above
+
+
+// Do a synchronisation of coupled points after creation of any patches.
+// Note: this does not work with points that are on multiple coupled patches
+//       with transformations (i.e. cyclics).
+pointSync false;
+
+// Patches to create.
+patches
+(
+
+    
+
+    {
+        // Name of new patch
+        name inout1_half0;
+
+        // Type of new patch
+        patchInfo
+        {
+            type        cyclic;
+            neighbourPatch  inout1_half1;
+            transform translational;
+            separationVector (-0.4 0 0);
+        }
+
+        constructFrom  patches;
+        patches (inout1_half01);
+        set f0;
+    }
+    {
+        // Name of new patch
+        name inout1_half1;
+
+        // Type of new patch
+        patchInfo
+        {
+            type        cyclic;
+            neighbourPatch  inout1_half0;
+            transform translational;
+            separationVector (0.4 0 0);
+        }
+
+        constructFrom  patches;
+        patches (inout1_half11);
+        set f0;
+    }
+    {
+        // Name of new patch
+        name inout2_half0;
+
+        // Type of new patch
+        patchInfo
+        {
+            type        cyclic;
+            neighbourPatch  inout2_half1;
+            transform translational;
+            separationVector (-0.4 0 0);
+        }
+
+        constructFrom  patches;
+        patches (inout2_half01);
+        set f0;
+    }
+    {
+        // Name of new patch
+        name inout2_half1;
+
+        // Type of new patch
+        patchInfo
+        {
+            type        cyclic;
+            neighbourPatch  inout2_half0;
+            transform translational;
+            separationVector (0.4 0 0);
+        }
+
+        constructFrom  patches;
+        patches (inout2_half11);
+        set f0;
+    }
+
+
+    );
+
+// ************************************************************************* //
+
