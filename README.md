@@ -16,7 +16,8 @@ This guide provides step-by-step instructions for installation, compilation, and
 
 # Installation
 
-The following steps install the **DAFI** framework, the **PythonFOAM solvers** , and the **FG-MoE turbulence models**.
+The following steps install the **DAFI** framework, the **PythonFOAM solvers** , and the **FG-MoE turbulence models**. 
+The installation process takes less than 10 minutes on a typical desktop computer.
 
 - Create working directory
 ```bash
