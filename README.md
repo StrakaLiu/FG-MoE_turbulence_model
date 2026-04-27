@@ -90,29 +90,33 @@ wclean && wmake
 ```
 # Datasets
 
-The datasets generated and used by the present study are provided at ???. 
+The datasets generated and used in the present study are provided at [???].
 
-The users can download the `refData.tar` file to the `$INSTALL_LOCATION/FG-MoE_turbulence_model/` dictionary and decompress it through `tar -zxvf $INSTALL_LOCATION/FG-MoE_turbulence_model/refData.tar`. This is required to run the test cases and reproduce the results in the present study.
+Users can download the refData.tar file to the `$INSTALL_LOCATION/FG-MoE_turbulence_model/` directory and decompress it using:
 
+```bash
+tar -zxvf $INSTALL_LOCATION/FG-MoE_turbulence_model/refData.tar
+```
+This step is required to run the benchmark test cases and reproduce the results presented in the present study.
 
 The data include:
 
-| Dictionary | Description |
+| directory | Description |
 | :--- | :--- |
-|truthData| The data from experiments, DNS or high resolution LES of different cases. Used as truth values for evaluating the model performance.
-|trainedExpertModelData| The data of the three training cases, each run by cooresponding trained expert model.
-|FG_MoEData| The simulation results of the test cases by the trained FG-MoE turbulence model.
-|baselineData_EARSM05| The simulation results of the test cases by the baseline EARSM05 model.
-|baselineData_SST| The simulation results of the test cases by the $k$-$\omega$ SST model.
+| truthData | The data from experiments, DNS, or high-resolution LES of different cases. Used as ground truth values for evaluating model performance. |
+| trainedExpertModelData | The data from the three training cases, each run by the corresponding trained expert model. |
+| FG_MoEData | The simulation results of the test cases obtained by the trained FG-MoE turbulence model. |
+| baselineData_EARSM05 | The simulation results of the test cases obtained by the baseline EARSM05 model. |
+| baselineData_SST | The simulation results of the test cases obtained by the $k$-$\omega$ SST model. |
 
 
 # Get started
 
 ### 1. Usage of the FG-MoE model 
 
-The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence model in OpenFoam. The required implements include:
+The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence model in OpenFOAM. The required implementations include:
 
-1. Add the following lib at the head of the `$CASE/system/controlDict` file:
+1. Add the following library at the beginning of the `$CASE/system/controlDict` file:
 
 ```C++
 libs
@@ -128,10 +132,10 @@ RAS
 {
     RASModel            FG_MoE; 	
     useBaselineModel    false;	//'true' if use the baseline EARSM05 model
-    homogeneousZ        true; 	//'true' if the case is 2D and being homogeneous in Z direction
-    homogeneousY        false; 	//'true' if the case is 2D and being homogeneous in Y direction
-    kInf                0.1;	//freestream value of k. Set as zero for internal cases
-    omegaInf            100;	//freestream value of omega. Set as zero for internal cases
+    homogeneousZ        true; 	//'true' if the case is 2D and homogeneous in Z direction
+    homogeneousY        false; 	//'true' if the case is 2D and homogeneous in Y direction
+    kInf                0.1;	//freestream value of k. Set to zero for internal cases
+    omegaInf            100;	//freestream value of omega. Set to zero for internal cases
 }
 ```
 
@@ -144,7 +148,7 @@ cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $CASE/
 
 4. Run the case with the `PysimpleFoam` or the `PyrhoSimpleFoam` solvers.
 
-An example of the case set-up can be found at `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/sampleCaseSet_channelFlow/` dictionary. 
+An example of the case setup can be found at `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/sampleCaseSet_channelFlow/` directory. 
 This is a channel flow at $Re_\tau=5200$. 
 It can be run and post-processed by:
 
@@ -154,32 +158,32 @@ postProcess -func sample_in
 python3 plotU.py
 ```
 
-The simulation will be finished in about 200 seconds.
+The simulation will finish in about 200 seconds.
 
 ### 2. Train experts for each flow scenario
 
-The initial sets for training the three expert models are located in `$INSTALL_LOCATION/FG-MoE_turbulence_model/trainingExperts/` dictionary. To run the training process, use the `training.sh` script in each training case.
+The initial datasets for training the three expert models are located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/trainingExperts/` directory. To run the training process, use the `training.sh` script in each training case.
 
-The `inputs/` dictionary includes two sub-dictionaries. 
-The `data/` includes the truth data for training (from experiment or DNS).
-The `baseline/` containes the prediction results with the baseline model, which is used as the initial guess for the training process. 
+The `inputs/` directory contains two subdirectories:
+- `data/`: contains the ground truth data for training (from experiments or DNS).
+- `baseline/`: contains the prediction results from the baseline model, which are used as the initial guess for the training process.
 
-During training, there will be a `results_ensemble/` dictionary, containing samples of the ensembled training as `sample_*/`. 
-In each sample dictionary, the prediction results at each iteration are listed as time dictionaries. 
+During training, a `results_ensemble/` directory will be created, containing samples of the ensemble training as `sample_*/`. 
+In each sample directory, the prediction results at each iteration are listed as time directories. 
 The related neural-network weight parameters are listed as `nn_weights_flatten_*.dat`. 
 
-The mean absolute error of each sample predictions during the iteration can be plotted with the script `plot_misfit.py`. Any converging criteria can be used to end the training process. The neural-network weight parameters (defined by the related `nn_weights_flatten_*.dat` file) of the sample with the lowest prediction error can be chosen as a trained expert. 
+The mean absolute error of each sample's predictions during the iteration can be plotted using the script `plot_misfit.py`. Any convergence criterion can be used to end the training process. The neural-network weight parameters (defined by the corresponding `nn_weights_flatten_*.dat` file) for the sample with the lowest prediction error can be chosen as a trained expert. 
 
-The four expert models (3 trained and 1 baseline) in the present study are provided as `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/*.dat`.
+The four expert models (three trained and one baseline) in the present study are provided as `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/*.dat`.
 
 
 
 ### 3. Test FG-MOE model in benchmark cases
 
-There are several test cases for evaluating the capability of the trained FG-MOE turbulence model, which are located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/initialCases/` dictionary. 
+Several benchmark test cases are provided to evaluate the capability of the trained FG-MoE turbulence model. These cases are located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/initialCases/` directory.
 
 To run the cases, use the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/*.sh` scripts. 
-The expected simulation results of the test cases by the FG-MoE model can be found in `$INSTALL_LOCATION/FG-MoE_turbulence_model/refData/FG_MoEData/` dictionary.
+The expected simulation results of the test cases obtained by the FG-MoE model can be found in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/refData/FG_MoEData/` directory.
 
 The test cases are as follow:
 
@@ -201,21 +205,21 @@ The test cases are as follow:
 
 # Reproductivity
 
-The results demonstrated in the paper can be reproduced via the python scripts located in `$INSTALL_LOCATION/FG-MoE_turbulence_model/postProcess/` dictionary. 
+The results presented in the paper can be reproduced using the Python scripts located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/postProcess/` directory.
 
-The descriptions of the files are as follow:
+The descriptions of the files are as follows:
 
 | File name | Description |
 | :--- | :--- |
-| caseDir.txt | Defining the dictionary of the test cases for post-processing. |
-| plotExpertResults.py | Plots the detailed results of the trained expert models in corresponding training cases (Fig. 2). |
-| calculateCasesErr.py | Calculating the relative error of each test case and write as a file `modelErr.txt in the test cases dictionary. |
-| plotCasesErr.py | Plotting the relative errors and compared with the baseline and the  $k$-$\omega$  SST models (Fig. 3a). |
-| plotCasesResults.py | Plotting the detailed results in representative cases (Fig. 3b-f). |
-| plotCasesStates.py | Calculating and plots the global probabilities of the states and experts of each test cases (Fig. 4). |
-| plot_CRMHL_Cp.py | Plotting the pressure coefficient results of the HL-CRM case (Fig. 5). |
-| plotExpertData.py | Plotting the PDFs of the discriminant input features  $\phi_m$  and the resulting discriminant functions  $F_m$  (Fig. 6, left column). |
-| plotExpertGates.py | Plotting the contour plots of  $F_m$  in the training cases (Fig. 6, middle and right columns). |
+| caseDir.txt | Defines the directory of the test cases for post-processing. |
+| plotExpertResults.py | Plots the detailed results of the trained expert models in the corresponding training cases (Fig. 2). |
+| calculateCasesErr.py | Calculates the relative error for each test case and writes the results to a file named `modelErr.txt` in the test case directory. |
+| plotCasesErr.py | Plots the relative errors and compares them with the baseline and the $k$-$\omega$ SST models (Fig. 3a). |
+| plotCasesResults.py | Plots the detailed results for representative cases (Fig. 3b-f). |
+| plotCasesStates.py | Calculates and plots the global probabilities of the states and experts for each test case (Fig. 4). |
+| plot_CRMHL_Cp.py | Plots the pressure coefficient results of the HL-CRM case (Fig. 5). |
+| plotExpertData.py | Plots the PDFs of the discriminant input features $\phi_m$ and the resulting discriminant functions $F_m$ (Fig. 6, left column). |
+| plotExpertGates.py | Plots the contour plots of $F_m$ in the training cases (Fig. 6, middle and right columns). |
 
 # Contact
 
