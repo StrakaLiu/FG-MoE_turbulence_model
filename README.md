@@ -26,7 +26,7 @@ mkdir -p $INSTALL_LOCATION && cd $INSTALL_LOCATION
 
 ### 1. DAFI
 
-Download the DAFI code used for model learning
+- Download the DAFI code used for model learning
 ```bash
 git clone https://github.com/XinleiZhang/ENKL.git
 source $INSTALL_LOCATION/ENKL/init.sh
@@ -152,28 +152,27 @@ python3 plotU.py
 
 The simulation will be finished in about 200 seconds.
 
-### 2. Train experts for each flow scenario with DAFI code
+### 2. Train experts for each flow scenario
 
 The initial sets for training the three expert models are located in `$INSTALL_LOCATION/trainingExperts/` dictionary. To run the training process, use the `training.sh` script in each training case.
 
 The `inputs/` dictionary includes two sub-dictionaries. 
 The `data/` includes the truth data for training (from experiment or DNS).
-The `baseline/` containes the baseline model predicting results, as the initial iteration for the training process. 
+The `baseline/` containes the prediction results with the baseline model, which is used as the initial guess for the training process. 
 
 During training, there will be a `results_ensemble/` dictionary, containing samples of the ensembled training as `sample_*/`. 
-In each sample dictionary, the predicting results at each iteration are listed as time dictionaries. 
-The related neural-network weight parameters are also listed as `nn_weights_flatten_*.dat`. 
+In each sample dictionary, the prediction results at each iteration are listed as time dictionaries. 
+The related neural-network weight parameters are listed as `nn_weights_flatten_*.dat`. 
 
-The mean absolute error of each sample predictions during the iteration can be plotted as by the `plot_misfit.py` file. Any converging criteria can be used to end the training process. The neural-network weight parameters (defined by the related `nn_weights_flatten_*.dat` file) of the sample with the lowest predicting error can be chosen as a trained expert. 
+The mean absolute error of each sample predictions during the iteration can be plotted with the script `plot_misfit.py`. Any converging criteria can be used to end the training process. The neural-network weight parameters (defined by the related `nn_weights_flatten_*.dat` file) of the sample with the lowest prediction error can be chosen as a trained expert. 
 
-The four expert models (3 trained and 1 baseline) in the present study are provided in `$INSTALL_LOCATION/requiredModules/` dictionary.
+The four expert models (3 trained and 1 baseline) in the present study are provided in `$INSTALL_LOCATION/requiredModules/`.
 
 
 
 ### 3. Test FG-MOE model in various cases
 
-There are several test cases for testing the trained FG-MOE turbulence model. 
-They are located in the `$INSTALL_LOCATION/runTestCases/initialCases/` dictionary. 
+There are several test cases for evaluating the capability of the trained FG-MOE turbulence model, which are located in the `$INSTALL_LOCATION/runTestCases/initialCases/` dictionary. 
 
 To run the cases, use the `$INSTALL_LOCATION/runTestCases/*.sh` scripts. 
 The expected simulation results of the test cases by the FG-MoE model can be found in `$INSTALL_LOCATION/refData/FG_MoEData/` dictionary.
