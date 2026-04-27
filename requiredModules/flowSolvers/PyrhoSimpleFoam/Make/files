@@ -1,0 +1,3 @@
+PyrhoSimpleFoam.C
+
+EXE = $(FOAM_APPBIN)/PyrhoSimpleFoam
