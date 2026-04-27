@@ -90,7 +90,11 @@ wclean && wmake
 ```
 # Datasets
 
-The datasets generated and used by the present study are provided at `$INSTALL_LOCATION/refData/` dictionary. 
+The datasets generated and used by the present study are provided at ???. 
+
+The users can download the `refData.tar` file to the `$INSTALL_LOCATION/FG-MoE_turbulence_model/` dictionary and decompress it through `tar -zxvf $INSTALL_LOCATION/FG-MoE_turbulence_model/refData.tar`. This is required to run the test cases and reproduce the results in the present study.
+
+
 The data include:
 
 | Dictionary | Description |
@@ -134,13 +138,13 @@ RAS
 3. Copy the required modules by:
 
 ```bash
-cp $INSTALL_LOCATION/requiredModules/* $CASE/
+cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $CASE/
 ```
 
 
 4. Run the case with the `PysimpleFoam` or the `PyrhoSimpleFoam` solvers.
 
-An example of the case set-up can be found at `$INSTALL_LOCATION/requiredModules/sampleCaseSet_channelFlow/` dictionary. 
+An example of the case set-up can be found at `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/sampleCaseSet_channelFlow/` dictionary. 
 This is a channel flow at $Re_\tau=5200$. 
 It can be run and post-processed by:
 
@@ -154,7 +158,7 @@ The simulation will be finished in about 200 seconds.
 
 ### 2. Train experts for each flow scenario
 
-The initial sets for training the three expert models are located in `$INSTALL_LOCATION/trainingExperts/` dictionary. To run the training process, use the `training.sh` script in each training case.
+The initial sets for training the three expert models are located in `$INSTALL_LOCATION/FG-MoE_turbulence_model/trainingExperts/` dictionary. To run the training process, use the `training.sh` script in each training case.
 
 The `inputs/` dictionary includes two sub-dictionaries. 
 The `data/` includes the truth data for training (from experiment or DNS).
@@ -166,16 +170,16 @@ The related neural-network weight parameters are listed as `nn_weights_flatten_*
 
 The mean absolute error of each sample predictions during the iteration can be plotted with the script `plot_misfit.py`. Any converging criteria can be used to end the training process. The neural-network weight parameters (defined by the related `nn_weights_flatten_*.dat` file) of the sample with the lowest prediction error can be chosen as a trained expert. 
 
-The four expert models (3 trained and 1 baseline) in the present study are provided in `$INSTALL_LOCATION/requiredModules/`.
+The four expert models (3 trained and 1 baseline) in the present study are provided as `$INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/*.dat`.
 
 
 
-### 3. Test FG-MOE model in various cases
+### 3. Test FG-MOE model in benchmark cases
 
-There are several test cases for evaluating the capability of the trained FG-MOE turbulence model, which are located in the `$INSTALL_LOCATION/runTestCases/initialCases/` dictionary. 
+There are several test cases for evaluating the capability of the trained FG-MOE turbulence model, which are located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/initialCases/` dictionary. 
 
-To run the cases, use the `$INSTALL_LOCATION/runTestCases/*.sh` scripts. 
-The expected simulation results of the test cases by the FG-MoE model can be found in `$INSTALL_LOCATION/refData/FG_MoEData/` dictionary.
+To run the cases, use the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/*.sh` scripts. 
+The expected simulation results of the test cases by the FG-MoE model can be found in `$INSTALL_LOCATION/FG-MoE_turbulence_model/refData/FG_MoEData/` dictionary.
 
 The test cases are as follow:
 
@@ -197,7 +201,7 @@ The test cases are as follow:
 
 # Reproductivity
 
-The results demonstrated in the paper can be reproduced via the python scripts located in `$INSTALL_LOCATION/postProcess/` dictionary. 
+The results demonstrated in the paper can be reproduced via the python scripts located in `$INSTALL_LOCATION/FG-MoE_turbulence_model/postProcess/` dictionary. 
 
 The descriptions of the files are as follow:
 
