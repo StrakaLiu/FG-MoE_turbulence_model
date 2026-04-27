@@ -1,0 +1,24 @@
+EXE_INC = \
+    -I$(LIB_SRC)/TurbulenceModels/compressible/lnInclude \
+    -I$(LIB_SRC)/TurbulenceModels/turbulenceModels/lnInclude \
+    -I$(LIB_SRC)/transportModels/compressible/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/solidThermo/lnInclude \
+    -I$(LIB_SRC)/thermophysicalModels/solidSpecie/lnInclude \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
+    -I$(PYTHON_INCLUDE_PATH) \
+    -I$(NUMPY_INCLUDE_PATH)
+
+LIB_LIBS = \
+    -lcompressibleTurbulenceModels \
+    -lcompressibleTransportModels \
+    -lfluidThermophysicalModels \
+    -lsolidThermo \
+    -lsolidSpecie \
+    -lturbulenceModels \
+    -lspecie \
+    -lfiniteVolume \
+    -lmeshTools \
+    -$(PYTHON_LIB_NAME)
