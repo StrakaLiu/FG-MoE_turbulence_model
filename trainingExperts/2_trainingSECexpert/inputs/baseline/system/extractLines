@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Writes graph data for specified fields along a surface, specified by one point and a normal direction.
+
+\*---------------------------------------------------------------------------*/
+
+type            sets;
+libs            ("libsampling.so");
+
+interpolationScheme	cell;
+
+setFormat   raw;
+
+fields  (turbulenceProperties:R nonlinearR);
+
+sets
+(
+line0
+{
+	type        midPoint;
+	axis 			y;
+	start 		(0.075 		-0.999 			-0.999);
+	end 			(0.075		-0.001			-0.001);
+	nPoints 	500;
+}
+line1
+{
+	type        midPoint;
+	axis 			y;
+	start 		(0.075 		-0.999 			-0.95);
+	end 			(0.075		-0.02			-0.95);
+	nPoints 	500;
+}
+line2
+{
+	type        midPoint;
+	axis 			z;
+	start 		(0.075 		-0.02 		-0.999);
+	end 			(0.075		-0.02			-0.001);
+	nPoints 	500;
+}
+) ;
+
+// ************************************************************************* //

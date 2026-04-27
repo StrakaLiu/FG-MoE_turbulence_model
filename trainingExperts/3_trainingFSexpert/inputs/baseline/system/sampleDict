@@ -1,0 +1,114 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     3.1                                |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    system;
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+type sets;
+setFormat raw;
+
+
+surfaceFormat vtk;
+
+interpolationScheme cellPoint;
+
+fields
+(
+    U
+    //UMean
+);
+
+sets
+(
+    line_jet_exit
+    {
+        type        uniform;
+        axis        z;
+        start       (0 0 0);
+        end         (0 0 0.0254);
+        nPoints      100;
+    }
+
+    line_center
+    {
+        type        uniform;
+        axis        x;
+        start       (0 0  1.0e-7);
+        end         (2.0 0  1.0e-7);
+        nPoints      500;
+    }
+
+    line_x_2
+    {
+        type        uniform;
+        axis        z;
+        start       (0.1016 0 0);
+        end         (0.1016 0 0.0711);
+        nPoints      100;
+    }
+
+    line_x_5
+    {
+        type        uniform;
+        axis        z;
+        start       (0.2540 0 0);
+        end         (0.2540 0 0.0711);
+        nPoints      100;
+    }
+
+    line_x_10
+    {
+        type        uniform;
+        axis        z;
+        start       (0.5080 0 0);
+        end         (0.5080 0 0.0711);
+        nPoints      100;
+    }
+
+    line_x_15
+    {
+        type        uniform;
+        axis        z;
+        start       (0.7620 0 0);
+        end         (0.7620 0 0.0711);
+        nPoints      100;
+    }
+
+    line_x_20
+    {
+        type        uniform;
+        axis        z;
+        start       (1.0160 0 0);
+        end         (1.0160 0 0.0711);
+        nPoints      100;
+    }
+
+    // line_x_500
+    // {
+    //     type        cloud;
+    //     axis        z;
+    //     points      
+    // (
+    //     ()
+    // );
+    // }
+
+);
+
+surfaces
+(
+
+);
+
+// *********************************************************************** //

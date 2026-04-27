@@ -1,0 +1,25 @@
+
+dafi:
+    model_file: nnfoam.py
+    inverse_method: EnKF
+    nsamples: 32
+    max_iterations: 100
+    rand_seed: 1
+    verbosity: 2
+    convergence_option: max # discrepancy
+    save_level: iter
+    analysis_to_obs: False
+
+inverse:
+
+model:
+    foam_case: inputs/baseline
+    weight_baseline_file: inputs/baseline/nn_weights_flatten.dat
+    ncpu: 128
+    obs_file: inputs/baseline/postProcessing/sampleDict/1/
+
+    # training flows and measurements
+    rel_stddev: 0.03 #0.001
+    abs_stddev: 0.03 #0.005
+    obs_rel_std: 0.05 #0.000001
+    obs_abs_std: 0.0001
