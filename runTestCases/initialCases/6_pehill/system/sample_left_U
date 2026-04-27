@@ -1,0 +1,37 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2212                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+
+    type                surfaces;
+    libs                (sampling);
+
+    interpolationScheme cellPoint;
+    surfaceFormat       raw;
+
+    fields
+    (
+        U
+        turbulenceProperties:R
+        g1_
+        g2_
+        g3_
+    );
+
+    surfaces
+    (
+        left
+        {
+            type            plane;
+            point       (4 1 0.05);
+            normal    (0 0 1);
+            interpolate true;
+        }
+    );
+
+
+// ************************************************************************* //

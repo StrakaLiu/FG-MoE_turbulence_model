@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Writes graph data for specified fields along a surface, specified by one point and a normal direction.
+
+\*---------------------------------------------------------------------------*/
+
+type            sets;
+libs            ("libsampling.so");
+
+interpolationScheme	cellPoint;
+
+setFormat   raw;
+
+fields  (grad(avgUMean) avgUMean);
+
+sets
+(
+lineX1
+{
+	type        uniform;
+	axis 			x;
+	start 		(0.0 		-0.0374925 		0.075);
+	end 			(0.75		-0.0374925		0.075);
+	nPoints 	2001;
+}
+lineX2
+{
+	type        uniform;
+	axis 			x;
+	start 		(0.0 		-0.0374756546919272418 		0.075);
+	end 			(0.75		-0.0374756546919272418		0.075);
+	nPoints 	2001;
+}
+lineX3
+{
+	type        uniform;
+	axis 			x;
+	start 		(0.0 		-0.0374551637783758357 		0.075);
+	end 			(0.75		-0.0374551637783758357		0.075);
+	nPoints 	2001;
+}
+
+) ;
+
+// ************************************************************************* //

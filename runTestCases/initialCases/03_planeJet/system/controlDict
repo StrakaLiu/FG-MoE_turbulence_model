@@ -1,0 +1,92 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+( 
+    "lib_FG_MoE_compressibleRAS.so"
+) ;
+
+
+application       pimpleFoam;
+
+//startFrom           latestTime;
+startFrom           startTime;
+
+startTime           0;
+
+stopAt              endTime;
+
+endTime             5000;
+
+deltaT              1;
+
+writeControl        adjustableRunTime;
+
+writeInterval       1000;
+
+purgeWrite          1;
+
+writeFormat         ascii;
+//writeFormat         binary;
+
+writePrecision      6;
+
+writeCompression    off;
+
+timeFormat          general;
+
+timePrecision       8;
+
+adjustTimeStep      no;
+
+runTimeModifiable     true;
+
+maxCo           0.5;
+
+functions
+{
+
+    turbulenceFields1
+    {
+        // Mandatory entries (unmodifiable)
+        type            turbulenceFields;
+        libs            (fieldFunctionObjects);
+        fields           (R);
+        enabled         true;
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    writeTime;
+    }
+
+    Average
+   {
+    type            fieldAverage;
+    libs      ( "libfieldFunctionObjects.so" );
+    enabled         false;
+    timeStart 0.045;
+    writeControl    writeTime ;
+       fields
+       (
+          U
+          {
+              mean          on;
+              prime2Mean  on;
+              base          time;
+          }
+      
+       );
+   }
+}

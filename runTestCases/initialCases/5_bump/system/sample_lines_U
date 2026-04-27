@@ -1,0 +1,145 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Writes graph data for specified fields along a surface, specified by one point and a normal direction.
+
+\*---------------------------------------------------------------------------*/
+
+type            sets;
+libs            ("libsampling.so");
+
+interpolationScheme	cellPoint;
+
+setFormat   raw;
+
+fields  (U);
+
+sets
+(
+line_0
+{
+    type        midPoint;
+    axis        y;
+    start       (-0.061 0    0.03001);
+    end         (-0.061 0.1  0.03001);
+}
+line_1
+{
+    type        midPoint;
+    axis        y;
+    start       (-0.0305 0    0.03001);
+    end         (-0.0305 0.1  0.03001);
+}
+line_2
+{
+    type        midPoint;
+    axis        y;
+    start       (0.0 0    0.03001);
+    end         (0.0 0.1  0.03001);
+}
+line_3
+{
+    type        midPoint;
+    axis        y;
+    start       (0.0305 0    0.03001);
+    end         (0.0305 0.1  0.03001);
+}
+line_4
+{
+    type        midPoint;
+    axis        y;
+    start       (0.061 0    0.03001);
+    end         (0.061 0.1  0.03001);
+}
+line_5
+{
+    type        midPoint;
+    axis        y;
+    start       (0.0915 0    0.03001);
+    end         (0.0915 0.1  0.03001);
+}
+line_6
+{
+    type        midPoint;
+    axis        y;
+    start       (0.122 0    0.03001);
+    end         (0.122 0.1  0.03001);
+}
+line_7
+{
+    type        midPoint;
+    axis        y;
+    start       (0.1525 0    0.03001);
+    end         (0.1525 0.1  0.03001);
+}
+line_8
+{
+    type        midPoint;
+    axis        y;
+    start       (0.183 0    0.03001);
+    end         (0.183 0.1  0.03001);
+}
+line_9
+{
+    type        midPoint;
+    axis        y;
+    start       (0.2135 0    0.03001);
+    end         (0.2135 0.1  0.03001);
+}
+line_10
+{
+    type        midPoint;
+    axis        y;
+    start       (0.244 0    0.03001);
+    end         (0.244 0.1  0.03001);
+}
+line_11
+{
+    type        midPoint;
+    axis        y;
+    start       (0.2745 0    0.03001);
+    end         (0.2745 0.1  0.03001);
+}
+line_12
+{
+    type        midPoint;
+    axis        y;
+    start       (0.305 0    0.03001);
+    end         (0.305 0.1  0.03001);
+}
+line_13
+{
+    type        midPoint;
+    axis        y;
+    start       (0.3355 0    0.03001);
+    end         (0.3355 0.1  0.03001);
+}
+line_14
+{
+    type        midPoint;
+    axis        y;
+    start       (0.366 0    0.03001);
+    end         (0.366 0.1  0.03001);
+}
+line_15
+{
+    type        midPoint;
+    axis        y;
+    start       (0.3965 0    0.03001);
+    end         (0.3965 0.1  0.03001);
+}
+line_16
+{
+    type        midPoint;
+    axis        y;
+    start       (0.427 0    0.03001);
+    end         (0.427 0.1  0.03001);
+}
+) ;
+
+// ************************************************************************* //
