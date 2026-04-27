@@ -204,9 +204,13 @@ The test cases are as follow:
 | 7_FAITHhill | FAITH 3D hill | [Link](https://tmbwg.github.io/turbmodels/Other_exp_Data/FAITH_hill_exp.html) |
 | 8_CRMHL | High lift common research model | [Link](https://aiaa-hlpw.org/HLPW5/) |
 
+**Note:** Prior downloading of the datasets is required to run cases `7_FAITHhill` and `8_CRMHL`. See the **Datasets** section for details.
+
+
 # Reproductivity
 
 The results presented in the paper can be reproduced using the Python scripts located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/postProcess/` directory.
+Prior downloading of the datasets is required. See the **Datasets** section for details.
 
 The descriptions of the files are as follows:
 
