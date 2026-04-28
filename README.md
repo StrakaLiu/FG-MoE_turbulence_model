@@ -1,7 +1,7 @@
 
 # Introduction
 
-**FG-MoE (Factorized-Gating Mixture of Experts)** is a modeling framework designed to capture complex turbulent behaviors across different flow regimes. It decomposes the turbulence model into regime-specific experts and combines them through spatially varying gating probabilities. Crucially, a **factorized gating mechanism** is introduced to reduce model complexity, improve interpretability, and enable cross-regime generalization.
+**FG-MoE (Factorized-Gating Mixture of Experts)** is a modeling framework designed to capture complex turbulent behaviors across different flow regimes. It decomposes the turbulence model into regime-specific experts and combines them through spatially varying gating probabilities. Moreover, a **factorized gating mechanism** is introduced to reduce model complexity, improve interpretability, and enable cross-regime generalization.
 
 This guide provides step-by-step instructions for installation, compilation, and usage.
 
@@ -10,7 +10,7 @@ This guide provides step-by-step instructions for installation, compilation, and
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **OS**          | Ubuntu 22.04 (or other compatible Linux distributions)                                                                                                                                          |
 | **OpenFOAM**    | v2212 compiled and sourced (recommended: GCC 11.4.0, OpenMPI 4.1.2, CMake 3.22.1)                                                                                                               |
-| **Python**      | ≥3.8 (3.10 recommended) with pip, numpy (1.24.3 recommended), scipy (1.11.1 recommended), TensorFlow >2.1 (2.13.0 recommended, required for FG-MoE turbulence model), panda (2.3.3 recommended) |
+| **Python**      | ≥3.8 (3.10 recommended) with pip, numpy (1.24.3 recommended), scipy (1.11.1 recommended), TensorFlow >2.1 (2.13.0 recommended, required for FG-MoE turbulence model), pandas (2.3.3 recommended) |
 | **System Libs** | build-essential, cmake, flex, bison, zlib1g-dev, libreadline-dev, etc. (typically present if OpenFOAM is already built)                                                                         |
 | **Optional**    | ParaView (recommended for visualization)                                                                                                                                                        |
 
