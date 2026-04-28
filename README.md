@@ -1,7 +1,7 @@
 
 # Introduction
 
-**FG-MoE (Factorized-Gating Mixture of Experts)** is a modeling framework designed to capture complex turbulent behaviors across different flow regimes. It decomposes turbulence model into regime-specific experts and combines them through spatially varying gating probabilities. FG-MoE introduces a **factorized gating mechanism** to reduce model complexity, improve interpretability, and enable cross-regime generalization.
+**FG-MoE (Factorized-Gating Mixture of Experts)** is a modeling framework designed to capture complex turbulent behaviors across different flow regimes. It decomposes the turbulence model into regime-specific experts and combines them through spatially varying gating probabilities. Crucially, a **factorized gating mechanism** is introduced to reduce model complexity, improve interpretability, and enable cross-regime generalization.
 
 This guide provides step-by-step instructions for installation, compilation, and usage.
 
@@ -16,8 +16,8 @@ This guide provides step-by-step instructions for installation, compilation, and
 
 # Installation
 
-The following steps install the **DAFI** framework, the **PythonFOAM solvers** , and the **FG-MoE turbulence models**. 
-The installation process takes less than 10 minutes on a typical desktop computer.
+The following steps install the **DAFI** framework, the **PythonFOAM solvers**, and the **FG-MoE turbulence models**. 
+The installation process takes less than 10 minutes on a typical desktop with OpenFOAM compiled.
 
 - Create working directory
 ```bash
@@ -56,7 +56,7 @@ export PYTHON_LIB_PATH=$YOUR_PYTHON_LIB_PATH
 export PYTHON_BIN_PATH=$YOUR_PYTHON_BIN_PATH
 export PYTHON_INCLUDE_PATH=$YOUR_PYTHON_INCLUDE_PATH
 export NUMPY_INCLUDE_PATH=$YOUR_NUMPY_INCLUDE_PATH
-export PYTHON_LIB_NAME=lpython3.10
+export PYTHON_LIB_NAME=lpython3.10         # change with your python version
 ```
 
 - Source the PythonFOAM
@@ -72,7 +72,7 @@ cd $INSTALL_LOCATION/PythonFOAM
 git clone  https://github.com/StrakaLiu/FG-MoE_turbulence_model.git
 ```
 
-- Compile the CFD solvers which can couple with neural network-based turbulence model
+- Compile the CFD solvers that can couple with a neural network-based turbulence model
 ```bash
 cd $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/flowSolvers/PysimpleFoam
 wclean && wmake
@@ -115,7 +115,7 @@ The data include:
 
 ### 1. Usage of the FG-MoE model 
 
-The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence model in OpenFOAM. The required implementations include:
+The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence models in OpenFOAM. The required implementations include:
 
 1. Add the following library at the beginning of the `$CASE/system/controlDict` file:
 
@@ -140,10 +140,10 @@ RAS
 }
 ```
 
-3. Copy the required modules by:
+3. Copy the required modules into your case directory by:
 
 ```bash
-cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $CASE/
+cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $CASE_DIR/
 ```
 
 
@@ -170,7 +170,7 @@ The `inputs/` directory contains two subdirectories:
 - `baseline/`: contains the prediction results from the baseline model, which are used as the initial guess for the training process.
 
 During training, a `results_ensemble/` directory will be created, containing samples of the ensemble training as `sample_*/`. 
-In each sample directory, the prediction results at each iteration are listed as time directories. 
+In each sample directory, the prediction results at each iteration are listed in time directories. 
 The related neural-network weight parameters are listed as `nn_weights_flatten_*.dat`. 
 
 The mean absolute error of each sample's predictions during the iteration can be plotted using the script `plot_misfit.py`. Any convergence criterion can be used to end the training process. The neural-network weight parameters (defined by the corresponding `nn_weights_flatten_*.dat` file) for the sample with the lowest prediction error can be chosen as a trained expert. 
@@ -179,14 +179,14 @@ The four expert models (three trained and one baseline) in the present study are
 
 
 
-### 3. Test FG-MOE model in benchmark cases
+### 3. Test the FG-MOE model in benchmark cases
 
 Several benchmark test cases are provided to evaluate the capability of the trained FG-MoE turbulence model. These cases are located in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/initialCases/` directory.
 
 To run the cases, use the `$INSTALL_LOCATION/FG-MoE_turbulence_model/runTestCases/*.sh` scripts. 
 The expected simulation results of the test cases obtained by the FG-MoE model can be found in the `$INSTALL_LOCATION/FG-MoE_turbulence_model/refData/FG_MoEData/` directory.
 
-The test cases are as follow:
+The test cases are as follows:
 
 | Case name | Description | Source |
 | :--- | :--- | :--- |
