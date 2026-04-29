@@ -16,7 +16,7 @@ This guide provides step-by-step instructions for installation, compilation, and
 
 # Installation
 
-The following steps install the **DAFI** framework, the **PythonFOAM solvers**, and the **FG-MoE turbulence models**. 
+The following steps install the **DAFI** code, the **PythonFOAM solvers**, and the **FG-MoE turbulence models**. 
 The installation process takes less than 15 minutes on a typical desktop when the requirements are satisfied.
 
 - Create working directory
@@ -117,7 +117,7 @@ The data include:
 
 The trained FG-MoE turbulence model can be directly used like any of the RAS turbulence models in OpenFOAM. The required implementations include:
 
-1. Add the following library at the beginning of the `$CASE/system/controlDict` file:
+1. Add the following library at the beginning of the `$FOAMCASE_DIR/system/controlDict` file:
 
 ```C++
 libs
@@ -126,7 +126,7 @@ libs
 ) ;
 ```
 
-2. In the `$CASE/constant/turbulenceProperties` file, set the `RAS` dictionary as:
+2. In the `$FOAMCASE_DIR/constant/turbulenceProperties` file, set the `RAS` dictionary as:
 
 ```C++
 RAS
@@ -143,7 +143,7 @@ RAS
 3. Copy the required modules into your case directory by:
 
 ```bash
-cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $CASE_DIR/
+cp $INSTALL_LOCATION/FG-MoE_turbulence_model/requiredModules/* $FOAMCASE_DIR/
 ```
 
 
