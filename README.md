@@ -219,7 +219,7 @@ The descriptions of the files are as follows:
 | caseDir.txt | Defines the directory of the test cases for post-processing. |
 | plotExpertResults.py | Plots the detailed results of the trained expert models in the corresponding training cases (Fig. 2). |
 | calculateCasesErr.py | Calculates the relative error for each test case and writes the results to a file named `modelErr.txt` in the test case directory. |
-| plotCasesErr.py | Plots the relative errors and compares them with the baseline and the $k$-$\omega$ SST models (Fig. 3a). |
+| plotCasesErr.py | Plots the relative errors and compares them with the baseline and the $k-\omega$ SST models (Fig. 3a). |
 | plotCasesResults.py | Plots the detailed results for representative cases (Fig. 3b-f). |
 | plotCasesStates.py | Calculates and plots the global probabilities of the states and experts for each test case (Fig. 4). |
 | plot_CRMHL_Cp.py | Plots the pressure coefficient results of the HL-CRM case (Fig. 5). |
